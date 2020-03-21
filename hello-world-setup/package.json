@@ -1,0 +1,13 @@
+{
+  "name": "hello-world-setup",
+  "version": "1.0.0",
+  "description": "Basic TypeScript project setup.",
+  "author": "Peter J Langley",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^13.9.2",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
+  }
+}
