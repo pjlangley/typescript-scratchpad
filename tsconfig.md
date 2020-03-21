@@ -32,7 +32,7 @@ Which module system should TSC compile your code to?
 
 `outDir`
 
-Which folder should TSC put your generated JS . code in?
+Which folder should TSC put your generated JS code in?
 
 `strict`
 
