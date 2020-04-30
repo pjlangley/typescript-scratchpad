@@ -8,4 +8,5 @@ run in parallel to run the TypeScript compiler against the TS files to catch typ
 
 The polyfills are from `core-js`; the imports are automatically handled by `@babel/preset-env`
 inconjunction with the `useBuiltIns: 'usage'` configuration: Babel will automatically import
-the required polyfills based on what's in the `package.json`'s `browserslist`.
+the required polyfills based on the actual code usage, saving considerable boilerplate overhead,
+and decides what needs polyfilling, based on the `browserslist` values in `package.json`.
