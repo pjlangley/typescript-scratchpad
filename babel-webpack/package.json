@@ -1,0 +1,23 @@
+{
+  "name": "babel-webpack",
+  "version": "1.0.0",
+  "description": "TypeScript, Webpack and Babel",
+  "scripts": {
+    "build": "webpack",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "babel-loader": "^8.1.0",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "IE 10"
+  ]
+}
