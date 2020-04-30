@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    // "ES2019.Array" to support the `.flat` usage.
+    "lib": ["ES2015", "DOM", "ES2019.Array"],
+    "module": "ES2015",
+    "strict": true,
+    "target": "ESNext",
+    "noEmit": true,
+  },
+  "include": [
+    "src/*.ts"
+  ]
+}
