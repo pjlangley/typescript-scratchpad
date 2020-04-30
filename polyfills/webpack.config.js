@@ -27,7 +27,7 @@ module.exports = {
     ]
   },
   resolve: {
-    // .ts needed for core-js imports
+    // .js needed for core-js imports
     extensions: ['.ts', '.js'],
   },
   output: {
