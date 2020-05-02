@@ -1,0 +1,11 @@
+{
+  "name": "typescript-scratchpad",
+  "version": "1.0.0",
+  "description": "TypeScript scratchpad",
+  "scripts": {
+    "format": "prettier --write --prose-wrap always './**/*.md'"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5"
+  }
+}
