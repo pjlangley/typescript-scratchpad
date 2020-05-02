@@ -24,7 +24,8 @@ Which folders should TSC look in to find your TypeScript files?
 
 `lib`
 
-Which APIs should TSC assume exist in the environment you'll be running your code in?
+Which APIs should TSC assume exist in the environment you'll be running your
+code in?
 
 `module`
 
