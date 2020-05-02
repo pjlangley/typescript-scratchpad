@@ -93,8 +93,8 @@ let superCat: CatAndDog = {
 
 ## Tuples
 
-Tuples aare subtypes of `array`. They're a special way to type arrays that have
-fixed lengths, where the values aat each index haave specific known types.
+Tuples are subtypes of `array`. They're a special way to type arrays that have
+fixed lengths, where the values at each index have specific known types.
 
 ```
 let a: [number] = [1];
@@ -159,7 +159,7 @@ let numbers = {
 ```
 type Sum = (a: number, b: number) => number;
 
-function sum(a, b): Sum {
+const sum: Sum = (a, b) => {
   return a + b;
 }
 ```
@@ -228,11 +228,11 @@ type Filter = {
 }
 ```
 
-Because `<T>` is paart of the call signature, right before the signature's
+Because `<T>` is part of the call signature, right before the signature's
 opening parenthesis, `()`, TypeScript will bind a concrete type to `T` when we
-actually caall a function of type `Filter`.
+actually call a function of type `Filter`.
 
-If we'd insteaad scoped `T` to the type alias `Filter`, TypeScript would have
+If we'd instead scoped `T` to the type alias `Filter`, TypeScript would have
 required us to bind a type explicitly when we used `Filter`:
 
 ```
@@ -243,7 +243,7 @@ type Filter<T> = {
 const filter: Filter<string> = (array, f) => ...
 ```
 
-This is called "full signature call":
+This is called a "full signature call":
 
 ```
 type Filter<T> = {
@@ -305,12 +305,12 @@ const square: Square = {
 const redSquare = changeColour(square, 'red'); // type remains Square, not Shape
 ```
 
-Advantages of the binding the generic (`T extends Shape`):
+Advantages of binding the generic (`T extends Shape`):
 
 - If it was just typed `T`, TypeScript would throw an error for
   `console.log(shape.name)`, because this value can't safely be read on an
   unbounded shape of type `T`.
-- If we'd not chosen `T` for our generic type, and instead provide `Shape`
+- If we'd not chosen `T` for our generic type, and instead used `Shape`
   directly; `changeColour(shape: Shape, colour: string): Shape {...`, we would
   lose the type information after mapping `colour` to the object: `redSquare`
   would be of type `Shape`, not `Square`.
