@@ -314,3 +314,65 @@ Advantages of binding the generic (`T extends Shape`):
   directly; `changeColour(shape: Shape, colour: string): Shape {...`, we would
   lose the type information after mapping `colour` to the object: `redSquare`
   would be of type `Shape`, not `Square`.
+
+## `type` vs. `interface`
+
+The three subtle differences:
+
+1. Type alias are more general, in that their righthand side can be any type,
+   including a type expression, like `&` or `|`. For an interface, the righthand
+   side must be a shape. E.g. you can't rewrite the following type aliases as
+   interfaces:
+
+```typescript
+type A = number;
+type B = A | string;
+```
+
+2. When you extend an interface, TypeScript will make sure that the interface
+   you're extending is assignable to your extension. For example:
+
+```typescript
+interface A {
+  good(x: number): string;
+  bad(x: number): string;
+}
+
+interface B extends A {
+  good(x: string | number): string;
+  bad(x: string): string;
+}
+```
+
+`interface B` receives the following error:
+
+```
+Interface 'B' incorrectly extends interface 'A'.
+  Types of property 'bad' are incompatible.
+    Type '(x: string) => string' is not assignable to type '(x: number) => string'.
+      Types of parameters 'x' and 'x' are incompatible.
+        Type 'number' is not assignable to type 'string'.ts(2430)
+```
+
+However, this can be achieved with type aliases:
+
+```typescript
+type A = {
+  good(x: number): string;
+  bad(x: number): string;
+};
+
+type B = A & {
+  good(x: string | number): string;
+  bad(x: string): string;
+};
+```
+
+The extension results in an overloaded signature for `bad`.
+
+When modelling inheritance for object types, the assignability check that
+TypeScript does for interfaces can be a helpful tool to catch errors.
+
+3. Multiple interfaces with the same name in the same scope are automatically
+   merged; multiple type aliases with the same name in the same scope will throw
+   a compile time error. This feature is called declaration merging.
