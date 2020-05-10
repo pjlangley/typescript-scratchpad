@@ -7,7 +7,7 @@ Like `any`, `unknown` represents any value, but TypeScript won't let you use an
 
 Here are some things you can do:
 
-```
+```ts
 let a: unknown = 30; // unknown
 let b = a === 123; // boolean
 let c = a + 10; // Error TS2571: Object is of type 'unknown'.
@@ -25,7 +25,7 @@ if (typeof a === 'number') {
 
 For example, you can type a `boolean` as a literal value:
 
-```
+```ts
 let a: true = true;
 ```
 
@@ -41,7 +41,7 @@ explicitly declared.
 The index signature key's type (`T`) must be assignable to either `number` or
 `string`.
 
-```
+```ts
 let cinemaSeatAssignment: {
   [seatNumber: string]: string
 } = {
@@ -54,14 +54,14 @@ let cinemaSeatAssignment: {
 
 I.e. everything in A, or B, or both.
 
-```
+```ts
 type YesOrNo = 'yes' | 'no';
 ```
 
 A value with a union type isn't necessarily one specific member of the union: it
 can be multiple members at once.
 
-```
+```ts
 type Cat = { name: string, purrs: boolean };
 type Dog = { name: string, barks: boolean };
 type CatOrDogOrBoth = Cat | Dog;
@@ -79,7 +79,7 @@ This cat can both _purr_ and _bark_.
 
 I.e. everything in both A and B.
 
-```
+```ts
 type Cat = { name: string, purrs: boolean };
 type Dog = { name: string, barks: boolean };
 type CatAndDog = Cat & Dog;
@@ -96,7 +96,7 @@ let superCat: CatAndDog = {
 Tuples are subtypes of `array`. They're a special way to type arrays that have
 fixed lengths, where the values at each index have specific known types.
 
-```
+```ts
 let a: [number] = [1];
 let b: [string, string, number] = ['peter', 'paul', 1987];
 let trainFares: [number, number?][] = [
@@ -110,7 +110,7 @@ let friends: [string, ...string[]];
 
 Not as safe as you may expect:
 
-```
+```ts
 enum Flippable {
   Burger,
   Pancake,
@@ -129,7 +129,7 @@ let a: Flippable = 8;
 
 A safer approach is to avoid numeric values:
 
-```
+```ts
 enum Flippable {
   Burger = 'Burger',
   Pancake = 'Pancake',
@@ -144,7 +144,7 @@ let a: Flippable = 8; // Type '8' is not assignable to type 'Flippable'. ts(2322
 Any object that contains a property called `Symbol.iterator`, whose value is a
 function that returns an iterator.
 
-```
+```ts
 let numbers = {
   *[Symbol.iterator]() {
     for (let n = 1; n <= 10; n++) {
@@ -156,7 +156,7 @@ let numbers = {
 
 ## Functions
 
-```
+```ts
 type Sum = (a: number, b: number) => number;
 
 const sum: Sum = (a, b) => {
@@ -166,7 +166,7 @@ const sum: Sum = (a, b) => {
 
 Declaring a callback parameter:
 
-```
+```ts
 function log(
   message: string,
   f: (error: boolean) => void,
@@ -178,7 +178,7 @@ function log(
 
 Typing a function with a property:
 
-```
+```ts
 type WarnUser = {
   (warning: string): void
   wasCalled: boolean
@@ -199,7 +199,7 @@ warnUser.wasCalled = false;
 
 Filter example:
 
-```
+```ts
 type Filter = {
   <T>(array: T[], f: (item: T) => boolean): T[]
 }
@@ -222,7 +222,7 @@ let beginsWithP = filter(names, (name) => name.startsWith('P'));
 
 With this example:
 
-```
+```ts
 type Filter = {
   <T>(array: T[], f: (item: T) => boolean): T[]
 }
@@ -235,7 +235,7 @@ actually call a function of type `Filter`.
 If we'd instead scoped `T` to the type alias `Filter`, TypeScript would have
 required us to bind a type explicitly when we used `Filter`:
 
-```
+```ts
 type Filter<T> = {
   (array: T[], f: (item: T) => boolean): T[]
 }
@@ -245,7 +245,7 @@ const filter: Filter<string> = (array, f) => ...
 
 This is called a "full signature call":
 
-```
+```ts
 type Filter<T> = {
   (array: T[], f: (item: T) => boolean): T[]
 }
@@ -253,13 +253,13 @@ type Filter<T> = {
 
 This equivalent is called a "shorthand signature call":
 
-```
+```ts
 type Filter<T> = (array: T[], f: (item: T) => boolean) => T[];
 ```
 
 ### Nested type inference
 
-```
+```ts
 type MyEvent<T> = {
   target: T
   type: string
@@ -278,7 +278,7 @@ type TimedEvent<T> = {
 
 Here's an example:
 
-```
+```ts
 type Shape = {
   name: string
   colour: string
@@ -324,7 +324,7 @@ The three subtle differences:
    side must be a shape. E.g. you can't rewrite the following type aliases as
    interfaces:
 
-```typescript
+```ts
 type A = number;
 type B = A | string;
 ```
@@ -332,7 +332,7 @@ type B = A | string;
 2. When you extend an interface, TypeScript will make sure that the interface
    you're extending is assignable to your extension. For example:
 
-```typescript
+```ts
 interface A {
   good(x: number): string;
   bad(x: number): string;
@@ -356,7 +356,7 @@ Interface 'B' incorrectly extends interface 'A'.
 
 However, this can be achieved with type aliases:
 
-```typescript
+```ts
 type A = {
   good(x: number): string;
   bad(x: number): string;
@@ -375,4 +375,4 @@ TypeScript does for interfaces can be a helpful tool to catch errors.
 
 3. Multiple interfaces with the same name in the same scope are automatically
    merged; multiple type aliases with the same name in the same scope will throw
-   a compile time error. This feature is called declaration merging.
+   a compile time error. This feature is called **declaration merging**.
