@@ -11,7 +11,7 @@ Here are some things you can do:
 let a: unknown = 30; // unknown
 let b = a === 123; // boolean
 let c = a + 10; // Error TS2571: Object is of type 'unknown'.
-if (typeof a === 'number') {
+if (typeof a === "number") {
   let d = a + 10; // number
 }
 ```
@@ -43,10 +43,10 @@ The index signature key's type (`T`) must be assignable to either `number` or
 
 ```ts
 let cinemaSeatAssignment: {
-  [seatNumber: string]: string
+  [seatNumber: string]: string;
 } = {
-  '11a': 'Peter',
-  '11b': 'Paul'
+  "11a": "Peter",
+  "11b": "Paul",
 };
 ```
 
@@ -55,22 +55,22 @@ let cinemaSeatAssignment: {
 I.e. everything in A, or B, or both.
 
 ```ts
-type YesOrNo = 'yes' | 'no';
+type YesOrNo = "yes" | "no";
 ```
 
 A value with a union type isn't necessarily one specific member of the union: it
 can be multiple members at once.
 
 ```ts
-type Cat = { name: string, purrs: boolean };
-type Dog = { name: string, barks: boolean };
+type Cat = { name: string; purrs: boolean };
+type Dog = { name: string; barks: boolean };
 type CatOrDogOrBoth = Cat | Dog;
 
 let notACat: CatOrDogOrBoth = {
-  name: 'Kitty',
+  name: "Kitty",
   purrs: true,
   barks: true,
-}
+};
 ```
 
 This cat can both _purr_ and _bark_.
@@ -80,15 +80,15 @@ This cat can both _purr_ and _bark_.
 I.e. everything in both A and B.
 
 ```ts
-type Cat = { name: string, purrs: boolean };
-type Dog = { name: string, barks: boolean };
+type Cat = { name: string; purrs: boolean };
+type Dog = { name: string; barks: boolean };
 type CatAndDog = Cat & Dog;
 
 let superCat: CatAndDog = {
-  name: 'Kitty',
+  name: "Kitty",
   purrs: true,
   barks: true,
-}
+};
 ```
 
 ## Tuples
@@ -98,11 +98,8 @@ fixed lengths, where the values at each index have specific known types.
 
 ```ts
 let a: [number] = [1];
-let b: [string, string, number] = ['peter', 'paul', 1987];
-let trainFares: [number, number?][] = [
-  [5.77],
-  [4.49, 2.28]
-];
+let b: [string, string, number] = ["peter", "paul", 1987];
+let trainFares: [number, number?][] = [[5.77], [4.49, 2.28]];
 let friends: [string, ...string[]];
 ```
 
@@ -118,7 +115,7 @@ enum Flippable {
 }
 
 function flip(f: Flippable) {
-  return 'flipped it';
+  return "flipped it";
 }
 
 flip(Flippable.Burger);
@@ -131,9 +128,9 @@ A safer approach is to avoid numeric values:
 
 ```ts
 enum Flippable {
-  Burger = 'Burger',
-  Pancake = 'Pancake',
-  Plate = 'Plate',
+  Burger = "Burger",
+  Pancake = "Pancake",
+  Plate = "Plate",
 }
 
 let a: Flippable = 8; // Type '8' is not assignable to type 'Flippable'. ts(2322)
@@ -150,8 +147,8 @@ let numbers = {
     for (let n = 1; n <= 10; n++) {
       yield n;
     }
-  }
-}
+  },
+};
 ```
 
 ## Functions
@@ -161,17 +158,14 @@ type Sum = (a: number, b: number) => number;
 
 const sum: Sum = (a, b) => {
   return a + b;
-}
+};
 ```
 
 Declaring a callback parameter:
 
 ```ts
-function log(
-  message: string,
-  f: (error: boolean) => void,
-) {
-  console.log('Hello');
+function log(message: string, f: (error: boolean) => void) {
+  console.log("Hello");
   f(false);
 }
 ```
@@ -180,8 +174,8 @@ Typing a function with a property:
 
 ```ts
 type WarnUser = {
-  (warning: string): void
-  wasCalled: boolean
+  (warning: string): void;
+  wasCalled: boolean;
 };
 
 const warnUser: WarnUser = (warning) => {
@@ -191,7 +185,7 @@ const warnUser: WarnUser = (warning) => {
 
   warnUser.wasCalled = true;
   alert(warning);
-}
+};
 warnUser.wasCalled = false;
 ```
 
@@ -201,8 +195,8 @@ Filter example:
 
 ```ts
 type Filter = {
-  <T>(array: T[], f: (item: T) => boolean): T[]
-}
+  <T>(array: T[], f: (item: T) => boolean): T[];
+};
 
 const filter: Filter = (array, f) => {
   let result = [];
@@ -212,10 +206,10 @@ const filter: Filter = (array, f) => {
     }
   });
   return result;
-}
+};
 
-let names = ['Peter', 'Paul', 'Suzy'];
-let beginsWithP = filter(names, (name) => name.startsWith('P'));
+let names = ["Peter", "Paul", "Suzy"];
+let beginsWithP = filter(names, (name) => name.startsWith("P"));
 ```
 
 ## Generic binding
@@ -224,8 +218,8 @@ With this example:
 
 ```ts
 type Filter = {
-  <T>(array: T[], f: (item: T) => boolean): T[]
-}
+  <T>(array: T[], f: (item: T) => boolean): T[];
+};
 ```
 
 Because `<T>` is part of the call signature, right before the signature's
@@ -247,8 +241,8 @@ This is called a "full signature call":
 
 ```ts
 type Filter<T> = {
-  (array: T[], f: (item: T) => boolean): T[]
-}
+  (array: T[], f: (item: T) => boolean): T[];
+};
 ```
 
 This equivalent is called a "shorthand signature call":
@@ -261,17 +255,17 @@ type Filter<T> = (array: T[], f: (item: T) => boolean) => T[];
 
 ```ts
 type MyEvent<T> = {
-  target: T
-  type: string
-}
+  target: T;
+  type: string;
+};
 
-type ButtonType = MyEvent<HTMLButtonElement>
+type ButtonType = MyEvent<HTMLButtonElement>;
 
 type TimedEvent<T> = {
-  event: MyEvent<T>
-  from: Date
-  to: Date
-}
+  event: MyEvent<T>;
+  from: Date;
+  to: Date;
+};
 ```
 
 ### Bounded generics
@@ -280,13 +274,13 @@ Here's an example:
 
 ```ts
 type Shape = {
-  name: string
-  colour: string
-}
+  name: string;
+  colour: string;
+};
 
 type Square = Shape & {
-  sides: 4
-}
+  sides: 4;
+};
 
 function changeColour<T extends Shape>(shape: T, colour: string): T {
   console.log(shape.name);
@@ -299,10 +293,10 @@ function changeColour<T extends Shape>(shape: T, colour: string): T {
 const square: Square = {
   colour: "blue",
   name: "square",
-  sides: 4
-}
+  sides: 4,
+};
 
-const redSquare = changeColour(square, 'red'); // type remains Square, not Shape
+const redSquare = changeColour(square, "red"); // type remains Square, not Shape
 ```
 
 Advantages of binding the generic (`T extends Shape`):
@@ -376,3 +370,182 @@ TypeScript does for interfaces can be a helpful tool to catch errors.
 3. Multiple interfaces with the same name in the same scope are automatically
    merged; multiple type aliases with the same name in the same scope will throw
    a compile time error. This feature is called **declaration merging**.
+
+## Generic defaults
+
+```ts
+type MyEvent<T = HTMLElement> = {
+  target: T;
+  type: string;
+};
+```
+
+You can also add bounds to a generic:
+
+```ts
+type MyEvent<T extends HTMLElement> = {
+  target: T;
+  type: string;
+};
+```
+
+## Classes are structurally typed
+
+```ts
+class Zebra {
+  trot() {}
+}
+
+class Poodle {
+  trot() {}
+}
+
+function ambleAround(animal: Zebra) {
+  animal.trot();
+}
+
+let zebra = new Zebra();
+let poodle = new Poodle();
+
+ambleAround(zebra); // OK
+ambleAround(poodle); // OK
+```
+
+This works, because both classes share the same shape, and so it's assignable.
+
+## Typing a class and class constructor
+
+```ts
+class SomeClass {
+  someProp: number;
+  constructor() {}
+  someMethod(thing: string): void {}
+}
+
+interface SomeClass {
+  someProp: number;
+  someMethod(thing: string): void;
+}
+
+interface SomeClassConstructor {
+  new (): SomeClass;
+}
+```
+
+The `new` part is called a _constructor signature_, and is TypeScript's way of
+saying that a given type can be instantiated with the _new_ operator.
+
+## Class polymorphism
+
+Bind class-scoped generic types when declaring your class. Here, `K` and `V`
+area available to every instance method and instance property on `MyMap`.
+
+```ts
+class MyMap<K, V> {
+  constructor(initialKey: K, initialValue: V) {}
+  get(key: K) {}
+  set(key: K, value: V) {}
+  static of<K, V>(k: K, v: V): MyMap<K, V> {}
+}
+```
+
+Notice that the `static` method doesn't have access to their class generics.
+Instead, it declares its own `K` and `V` generics.
+
+## Class Builder Pattern
+
+E.g.:
+
+```ts
+new RequestBuilder().setURL("/users").setMethod("get");
+```
+
+To type this, we could do the following:
+
+```ts
+class RequestBuilder {
+  private url: string | null = null;
+
+  setURL(url: string): this {
+    this.url = url;
+    return this;
+  }
+
+  setMethod(method: "get" | "post"): this {
+    this.method = method;
+  }
+}
+```
+
+## Covariance
+
+TypeScript shapes (object and classes) are _covariant_ in their property types.
+That is, for an object A to be assignable to an object B, each of its properties
+must be <: its corresponding property in B.
+
+**Invariance**
+
+You want exactly T.
+
+**Covariance**
+
+You want <:T.
+
+**Contravariance**
+
+You want >:T.
+
+**Bivariance**
+
+You're okay with either <:T or >:T.
+
+In TypeScript; objects, classes, arrays and function return types are covariant.
+But function parameters types are contravariant.
+
+For example:
+
+```ts
+class Animal {}
+class Bird extends Animal {}
+class Cros extends Bird {}
+```
+
+Crow is a subtype of Bird, which is a subtype of Animal:
+
+```
+<: Bird <: Animal
+```
+
+## Excess property checking
+
+```ts
+type Options = {
+  prop: number;
+};
+
+type Foo = (options: Options) => void;
+
+const foo: Foo = () => {};
+
+foo({
+  prop: 1,
+  notTyped: "hi",
+  // ^ Object literal may only specify known properties, and 'notTyped' does not exist in type 'Options'.
+  // ts(2345)
+});
+
+const options = {
+  prop: 1,
+  notTyped: "hi", // No TS warning...
+};
+
+foo(options);
+```
+
+TypeScript only performs _excess property checking_ when you try to assign a
+fresh object literal type to another type.
+
+A fresh object literal type is the type TypeScript infers from an object
+literal. If the object literal either uses a type assertion or is assigned to a
+variable, then the fresh object literal type is _widened_ to a regular object
+type, and its freshness disappears.
