@@ -438,7 +438,7 @@ saying that a given type can be instantiated with the _new_ operator.
 ## Class polymorphism
 
 Bind class-scoped generic types when declaring your class. Here, `K` and `V`
-area available to every instance method and instance property on `MyMap`.
+are available to every instance method and instance property on `MyMap`.
 
 ```ts
 class MyMap<K, V> {
