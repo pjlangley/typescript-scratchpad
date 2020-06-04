@@ -75,6 +75,29 @@ let notACat: CatOrDogOrBoth = {
 
 This cat can both _purr_ and _bark_.
 
+### Unique union types
+
+Given that we've seen a cat can both purr and bark with a union type, there's a conventional
+way to let TS know which type it is, when necessary, and that's to add a `type` prop:
+
+```ts
+type Cat = { type: 'cat', name: string; purrs: boolean };
+type Dog = { type: 'dog', name: string; barks: boolean };
+type CatOrDogOrBoth = Cat | Dog;
+
+function handlePet(pet: CatOrDogOrBoth) {
+  if (pet.type === 'cat') {
+    console.info(pet.barks);
+  }
+}
+```
+
+Within the `if` statement, TS throws the following error, as it was able to infer the type was a `Cat`:
+
+```
+Property 'barks' does not exist on type 'Cat'. ts(2339)
+```
+
 ## Intersection types
 
 I.e. everything in both A and B.
@@ -549,3 +572,147 @@ A fresh object literal type is the type TypeScript infers from an object
 literal. If the object literal either uses a type assertion or is assigned to a
 variable, then the fresh object literal type is _widened_ to a regular object
 type, and its freshness disappears.
+
+## Key in to a type
+
+```ts
+type APIResponse = {
+  user: {
+    id: string
+    friendsList: {
+      count: number
+    }
+  }
+}
+
+type userId = APIResponse['user']['id'];
+type count = APIResponse['user']['friendsList']['count'];
+```
+
+## Key of
+
+```ts
+function get<
+  O extends object,
+  K extends keyof O
+>(
+  o: O,
+  k: K
+): O[K] {
+  return o[k];
+}
+
+const result = get({ a: 'a' }, 'a');
+```
+
+- `result` is inferred as type `string`.
+- `keyof O` is a union of string literal types, respresenting all of `o`'s keys.
+
+## Mapped type
+
+```ts
+type UserAccount = {
+  id: number
+  isActive: boolean
+}
+
+// Make all fields optional
+type OptionalUserAccount = {
+  [K in keyof UserAccount]?: UserAccount[K]
+}
+
+// Equivalent to:
+type OptionalUserAccount2 = Partial<UserAccount>;
+
+// Make all fields nullable
+type NullableUserAccount = {
+  [K in keyof UserAccount]: UserAccount[K] | null
+}
+```
+
+## Companion Object Pattern
+
+TypeScript types and values live in separate namespaces, which means you can do things like this:
+
+```ts
+type Currency = {
+  unit: 'GBP' | 'EUR'
+  value: number
+}
+
+let Currency = {
+  DEFAULT: 'GBP',
+  from(value: number, unit = Currency.DEFAULT): Currency {
+    return { unit, value };
+  }
+}
+```
+
+It also means you can `import` both the type and value too:
+
+```ts
+import { Currency } from './Currency';
+
+let amountDue: Currency = {
+  unit: 'GBP',
+  value: 333,
+};
+let anotherAmountDue = Currency.from(335, 'EUR');
+```
+
+## User Defined Type Guards
+
+```ts
+function isString(a: unknown): boolean {
+  return typeof a === 'string';
+}
+
+function stuff(input: string | number) {
+  if (isString(input)) {
+    input.toUpperCase();
+  }
+}
+```
+
+We actually see a TS error for the above usage on `toUpperCase`. Although we've implemented
+a `typeof` check, this assertion is lost outside of the scope of the `isString` function.
+
+Instead, we can create a _user-defined type guard_ by updating the `isString` method like so:
+
+```ts
+function isString(a: unknown): a is string {
+  return typeof a === 'string';
+}
+```
+
+The TS error goes away, because this tells TypeScript that if this returns `true`, not only
+is the return a `boolean`, but it's also a type `string`.
+
+## Conditional types
+
+```ts
+type A = number | string
+type B = string
+type C = Exclude<A, B> // number
+
+type D = 'one' | 'two' | 3
+type E = Extract<D, string> // "one" | "two"
+
+type F = { a?: number | null }
+type G = NonNullable<F> // { a?: number }
+
+type H = (a: number) => string
+type I = ReturnType<H> // string
+
+type J = {new(): K}
+type K = { b: number }
+type L = InstanceType<J> // { b: number }
+```
+
+## Non null assertion operator
+
+If you're **sure** something won't be `null`:
+
+```ts
+document.querySelector('.thing')!.innerHTML;
+```
