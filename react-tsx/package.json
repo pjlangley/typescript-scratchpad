@@ -1,0 +1,17 @@
+{
+  "name": "react-tsx",
+  "version": "1.0.0",
+  "description": "Basic React & tsx",
+  "author": "Peter J Langley",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.35",
+    "typescript": "^3.9.5"
+  }
+}
