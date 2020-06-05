@@ -715,3 +715,37 @@ If you're **sure** something won't be `null`:
 ```ts
 document.querySelector(".thing")!.innerHTML;
 ```
+
+## Typing event emitters
+
+```ts
+type Events = {
+  ready: void
+  error: Error
+  reconnecting: { attempt: number, delay: number }
+}
+
+type RedisClient = {
+  on<E extends keyof Events>(
+    event: E,
+    f: (arg: Events[E]) => void
+  ): void
+  emit<E extends keyof Events>(
+    event: E,
+    arg: Events[E]
+  ): void
+}
+
+const eventEmitter: RedisClient = {
+  on(event) {
+    console.info(event);
+  },
+  emit(event) {
+    console.info(event);
+  }
+}
+
+eventEmitter.on('error', (error) => {
+  console.error(error);
+});
+```
