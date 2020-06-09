@@ -720,21 +720,15 @@ document.querySelector(".thing")!.innerHTML;
 
 ```ts
 type Events = {
-  ready: void
-  error: Error
-  reconnecting: { attempt: number, delay: number }
-}
+  ready: void;
+  error: Error;
+  reconnecting: { attempt: number; delay: number };
+};
 
 type RedisClient = {
-  on<E extends keyof Events>(
-    event: E,
-    f: (arg: Events[E]) => void
-  ): void
-  emit<E extends keyof Events>(
-    event: E,
-    arg: Events[E]
-  ): void
-}
+  on<E extends keyof Events>(event: E, f: (arg: Events[E]) => void): void;
+  emit<E extends keyof Events>(event: E, arg: Events[E]): void;
+};
 
 const eventEmitter: RedisClient = {
   on(event) {
@@ -742,10 +736,146 @@ const eventEmitter: RedisClient = {
   },
   emit(event) {
     console.info(event);
-  }
-}
+  },
+};
 
-eventEmitter.on('error', (error) => {
+eventEmitter.on("error", (error) => {
   console.error(error);
 });
 ```
+
+## Dynamic imports
+
+If using a string literal directly to `import`, without assigning the string to
+a variable first, TS will be able to provide type safety. However, if the string
+is a computed variable, you'll need to lend a helping hand:
+
+```ts
+import { locale } from "./locales/locale-en-GB";
+
+async function main() {
+  let userLocale = await getUserLocale();
+  let path = `./locales/locale-${userLocale}`;
+  let chosenLocale: typeof locale = await import(path);
+}
+```
+
+We have only used the type from the `locale` import, so TS will strip away this
+static import at compile time.
+
+## Ambient Variable Declarations
+
+This is a way to tell TypeScript about a global variable that can be used in any
+`.ts` or `.d.ts` file in your project without explicitly importing it first.
+
+For example, you might have code like this:
+
+```ts
+process.env.NODE_ENV;
+```
+
+But you get the following TS complaint:
+
+```
+Uncaught ReferenceError: process is not defined.
+```
+
+Solution:
+
+```ts
+declare let process: {
+  env: {
+    NODE_ENV: "development" | "production";
+  };
+};
+```
+
+This declares to TS that there's a global object `process` that has a single
+property `env`, that has a property `NODE_ENV`.
+
+TypeScript already comes with a set of type declarations for describing the
+JavaScript standard library that includes built-in JavaScript types, like
+`Array` and `Promise`. It also includes global objects like `window` and
+`document` in a browser environment. You can pull these in by specifying the
+library in the `tsconfig.json`'s `lib` field.
+
+## Ambient Type Declarations
+
+This follows the same rules as ambient variable declarations: the delcaration
+has to live in a script-mode `.ts` or `.d.ts` file, and it'll be available
+globally to the other files in your project without an explicit import.
+
+Let's declare a global `type` in a top-level `types.ts` file:
+
+```ts
+type VeganFood = "tofu" | "peanut_butter";
+```
+
+You can now use this type from any project file, without an explicit import.
+
+## Ambient Module Declarations
+
+When you consume a JavaScript module and want to quickly declare some typoes for
+it so you can use it safely, without having to contribute the type declarations
+back to the JavaScript module's GitHub repo or DefinitelyTyped first, ambient
+module declarations are the tool to use.
+
+```ts
+declare module "module-name" {
+  export type MyDefaultType = { a: number };
+  let myDefaultType: MyDefaultType;
+  export default myDefaultType;
+}
+```
+
+`'module-name'` corresponds to the exact import path:
+
+```ts
+import ModuleName from "module-name";
+ModuleName.a; // number
+```
+
+## Using Third-Party JavaScript
+
+When you install third-party JavaScript code into your project, there are three
+possible scenarios:
+
+1. The code you installed comes with type declarations out of the box. If you
+   have `{ noImplicitAny: true }` in your `tsconfig.json`, and on importing a JS
+   module you don't get any TS complaints, it means it's in this scenario.
+2. The code you installed doesn't come with type declarations, but declarations
+   are available on DefinitelyTyped. This is a community maintained, centralised
+   repository for ambient module declarations for open source projects. They
+   could run the risk of being incomplete, inaccurate or stale.
+3. The code you installed doesn't come with type declarations, and declarations
+   are not available on DefinitelyTyped.
+
+In the last scenario, you have several options.
+
+1. Whitelist the specific import:
+
+```ts
+// @ts-ignore
+import Unsafe from "untyped-module";
+
+Unsafe; // any
+```
+
+2. Whitelist all usages of this module by creating an empty type declaration
+   file and stubbing out the module:
+
+```ts
+// types.d.ts
+declare module "untyped-module";
+```
+
+3. Create an ambient module declaration.
+
+```ts
+// types.d.ts
+declare module "untyped-module" {
+  export default function something(that: string): void;
+}
+```
+
+4. Create a type declaration and contribute it back to NPM.
