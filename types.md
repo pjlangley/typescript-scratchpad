@@ -879,3 +879,90 @@ declare module "untyped-module" {
 ```
 
 4. Create a type declaration and contribute it back to NPM.
+
+## Triple-slash directive
+
+This is a little-known, rarely used, and mostly outdated feature.
+
+### Types directive
+
+The types directive allows you do to a full-module import but avoid generating a
+JavaScript `import` or `require` call for that import. A triple-slash directive
+is three slashes `///` followed by one of a few possible XML tabs, each with its
+own set of required attributes.
+
+Declare a dependency on an ambient type declaration:
+
+```ts
+/// <reference types="./global" />
+```
+
+Declare a dependency on @types/jamine/index.d.ts:
+
+```ts
+/// <reference types="jasmine" />
+```
+
+It's better to rethink how you're using types if you end up using this type of
+approach; you can import explicit values or types from modules
+(`import { MyThing } from 'here'`) or include ambient types in `tsconfig.json`'s
+`types`, `files` or `include`.
+
+### Amd-module directive
+
+When compiling TS code to the AMD module format, TS will generate anonymous AMD
+modules by default. You can use the AMD triple-slash directive to give your
+emitted modules names.
+
+For example, the following code:
+
+```js
+export let LogService = {
+  log() {
+    // ...
+  },
+};
+```
+
+Compiling to the `amd` module format, TSC generates the following JS code:
+
+```js
+define(["require", "exports"], function (require, exports) {
+  exports.__esModule = true;
+  exports.LogService = {
+    log() {
+      // ...
+    },
+  };
+});
+```
+
+The above results in an anonymous AMD module. To give your AMD module a name,
+use the `amd-module` triple-slash directive in your code:
+
+```ts
+/// <amd-module name="LogService" />
+export let LogService = {
+  log() {
+    // ...
+  },
+};
+```
+
+Recompiling to the AMD module format with TSC, we now get the following
+JavaScript:
+
+```js
+/// <amd-module name="LogService" />
+define("LogService", ["require", "exports"], function (require, exports) {
+  exports.__esModule = true;
+  exports.LogService = {
+    log() {
+      // ...
+    },
+  };
+});
+```
+
+This makes the code easier to bundle and debug. But, switch to a more modern
+module format like ES2015 modules where possible.
