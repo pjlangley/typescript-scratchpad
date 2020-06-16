@@ -966,3 +966,25 @@ define("LogService", ["require", "exports"], function (require, exports) {
 
 This makes the code easier to bundle and debug. But, switch to a more modern
 module format like ES2015 modules where possible.
+
+## Type utilities
+
+This is a snapshot just for reference, but remember to keep an eye on the living
+documentation on the
+[TypeScripts docs](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+
+| Type utility            | Use it on                      | Description                                                                     |
+| ----------------------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| `ConstructorParamaters` | Class constructor types        | A tuple of a class constuctor's parameter types                                 |
+| `Exclude`               | Union types                    | Exclude a type from another type                                                |
+| `Extract`               | Union types                    | Select a subtype that's assignable to another type                              |
+| `InstanceType`          | Class constructor types        | The instance type you get from `new`-ing a class constructor                    |
+| `NonNullable`           | Nullable types                 | Exclude `null` and `undefined` from a type                                      |
+| `Parameters`            | Function types                 | A tuple of a function's parameter types                                         |
+| `Partial`               | Object types                   | Make all properties in an object optional                                       |
+| `Pick`                  | Object types                   | A subtype of an object type, with a subset of its keys                          |
+| `Readonly`              | Array, Object, and Tuple types | Make all properties in an object read-only, or make an array or tuple read-only |
+| `ReadonlyArray`         | Any type                       | Make an immutable array of the given type                                       |
+| `Record`                | Object types                   | A map from a key type to a value type                                           |
+| `Required`              | Object types                   | Make all properties in an object required                                       |
+| `ReturnType`            | Function types                 | A function's return type                                                        |
