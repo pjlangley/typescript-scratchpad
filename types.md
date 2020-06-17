@@ -1020,3 +1020,125 @@ let Flowers;
 - `Flowers` is declared within an IIFE, to create a closure and prevent
   variables that weren't explicitly exported from leaking out of the `Flowers`
   module.
+
+## Type lookup for JavaScript
+
+1. Look for a sibling `.d.ts` file with the same name as your `.js` file. If it
+   exists, use it as the type declaration for the `.js` file. For example, say
+   you have the following folder structure:
+
+```
+.
+└── src
+    ├── index.ts
+    └── legacy
+        ├── old-file.d.ts
+        └── old-file.js
+```
+
+You then import `old-file`:
+
+```ts
+import "./legacy/old-file";
+```
+
+TypeScript will use `src/legacy/old-file.d.ts` as the source of type
+declarations for `./legacy/old-file`.
+
+2. Otherwise, if `allowJs` and `checkJs` are `true`, infer the `.js` file's
+   types (informed by any JSDoc annotations in the `.js` file).
+
+3. Otherwise, treat the whole module as an `any`.
+
+---
+
+When importing a third-party JavaScript module that has been installed into
+`node_modules`, TypeScript takes a slightly different approach.
+
+1. Look for a local type declaration for the module. If it exists, use it.
+
+For example, say your app's folder structure looks like this:
+
+```
+.
+├── node_modules
+│   └── foo
+└── src
+    ├── index.ts
+    └── types.d.ts
+```
+
+And `types.d.ts` looks like this:
+
+```ts
+declare module "foo" {
+  let bar: {};
+  export default bar;
+}
+```
+
+If you then import `foo`, TypeScript will use the ambient module declaration in
+`types.d.ts` as the source of types for `foo`:
+
+```ts
+import bar from "foo";
+```
+
+2. Otherwise, look at the module's `package.json`. If it defines a field called
+   `types` or `typings`, use the `.d.ts` file that field points to as the source
+   of type declarations for the module.
+
+3. Otherwise, traverse out a directory at a time, and look for a
+   `node_modules/@types` directory that has type declarations for the module.
+
+For example, say you installed React:
+
+```
+.
+├── node_modules
+│   ├── @types
+│   │   └── react
+│   └── react
+└── src
+    └── index.ts
+```
+
+When you import React, TypeScript will find the `@types/react` folder and use
+that as the source of type declarations for React:
+
+```ts
+import * as React from "react";
+```
+
+4. Otherwise, proceed to steps 1-3 of the local type lookup algorithm.
+
+---
+
+By default, TypeScript looks in `node_modules/@types` in your project's folder
+and containing folders (`../node_modules/@types` and so on) for third-party type
+declarations. Most of the time you want to leave this behaviour as is.
+
+To override this default behaviour for global type declarations, configure
+`typeRoots` in your `tsconfig.json` with an array of folders to look in for type
+declarations. For example, you can tell TypeScript to look for type declarations
+in the `typings` folder as well as `node_modules/@types`:
+
+```json
+{
+  "compilerOptions": {
+    "typeRoots": ["./typings", "./node_modules/@types"]
+  }
+}
+```
+
+For even more granular control, use the `types` option to specify which packages
+you want TypeScript to look up types for. For example, the following config
+ignores all third-party type declarations except the ones for React:
+
+```json
+{
+  "compilerOptions": {
+    "types": ["react"]
+  }
+}
+```
