@@ -988,3 +988,35 @@ documentation on the
 | `Record`                | Object types                   | A map from a key type to a value type                                           |
 | `Required`              | Object types                   | Make all properties in an object required                                       |
 | `ReturnType`            | Function types                 | A function's return type                                                        |
+
+## Namespaces
+
+Generally, this isn't the preferred way to encapsulate code, and you should use
+modules instead.
+
+Given the following:
+
+```ts
+namespace Flowers {
+  export function give(count: number) {
+    return `${count} flowers`;
+  }
+}
+```
+
+Gets compiled to:
+
+```js
+let Flowers;
+(function (Flowers) {
+  function give(count) {
+    return `${count} flowers`;
+  }
+})(Flowers || (Flowers = {}));
+```
+
+- Notice how `Flowers` is globally defined.
+- If `Flowers` is already defined, TypeScript augments it, else it creates it.
+- `Flowers` is declared within an IIFE, to create a closure and prevent
+  variables that weren't explicitly exported from leaking out of the `Flowers`
+  module.
