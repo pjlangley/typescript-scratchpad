@@ -1142,3 +1142,68 @@ ignores all third-party type declarations except the ones for React:
   }
 }
 ```
+
+## Building config for JavaScript
+
+- If you run your backend JavaScript program on a server that you control, then
+  you can control exactly which JavaScript version it will run on.
+- If you release your backend JavaScript program as an open source project, you
+  don't know which JavaScript version will be supported by your consumers'
+  platform. The best you can do in a NodeJS enviroment is to declare the
+  supported NodeJS versions.
+- If you run your JavaScript in a browser, you have no idea which browser people
+  will use to run it. The best you can do in this scenario is to define a
+  minimum set of features that peoples' browsers need to support to run your
+  application, and ship polyfills for as many of those features as you can. For
+  really old browsers that your app won't run on, you can show them a message
+  saying they need to upgrade.
+- If you release an isomorphic JavaScript library (both server and browser),
+  then you have to support both a minimum NodeJS version and a swath of browser
+  JavaScript engines and versions.
+
+In general, it's best practice to write JavaScript from the latest version, and
+_transpile_ to older versions. In addition, polyfills can plug in missing
+features from the JavaScript runtime.
+
+TSC has built-in support for transpiling your code to older JavaScript versions,
+but it will not automatically polyfill your code.
+
+TSC provides three settings to dial in which environment you want to target:
+
+1. `target` sets the JavaScript version you want to transpile to: `es5`,
+   `es2015`, etc.
+2. `module` sets the module system you want to target: `es2015` modules,
+   `commonjs` modules, `systemjs` modules, etc.
+3. `lib` tells TypeScript whih JavaScript features are available in the
+   environments you're targeting: `es5` features, `es2015` features, the `dom`,
+   etc. It doesn't actually implement these features - that's what polyfills are
+   for - but it does tell TypeScript that the features are available (either
+   natively or via a polyfill).
+
+The environment you plan to run your application in dictates which JavaScript
+version you should transpile to with `target` and what o set `lib` to. If you're
+not sure, `es5` is usually a safe default for both. What you set `module` to
+depends on whether you're targeting a NodeJS or browser environment, and what
+loader you're using if the latter.
+
+### `target`
+
+TSC's built-in transpiler supports converting most JavaScript features to older
+JavaScript version, meaning you can write your code in the latest TypeScript
+version and transpile it down to whatever JavaScript version you need to
+support. Since TypeScript supports the leatest JavaScript features, you can take
+advantage of this built-in transpiler.
+
+### `lib`
+
+If for example, you've polyfilled all ES2015 features plus ES2016's
+`Array.prototype.includes`, and you're targeting the browser, then your
+`tsconfig.json` could look something like this:
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["es2015", "es2016.array.includes", "dom"]
+  }
+}
+```
